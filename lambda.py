@@ -23,7 +23,6 @@ def buildResponse(statusCode, body=None):
 
     return response
 
-
 def getDemograhics(patientId):
     response = table.get_item(Key={"patientId": patientId})
 
@@ -31,7 +30,6 @@ def getDemograhics(patientId):
         return buildResponse(200, response["Item"])
     else:
         return buildResponse(404, f"Patient ID {patientId} not found")
-
 
 def saveDemographics(requestBody):
     try:

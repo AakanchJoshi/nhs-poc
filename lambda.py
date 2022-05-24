@@ -45,6 +45,25 @@ def saveDemographics(requestBody):
         return buildResponse(404, "Not able to save the patient details!")
 
 
+def updateDemographics(patientId, updatekey, updatevalue):
+    response = table.update_item(
+        Key={
+            "patientId": patientId
+        },
+        UpdateExpression = "SET %s = :value" % updatekey,
+        ExpressionAttributeValues={
+                ':value': updatevalue
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+    body = {
+        "message": "SUCCESS",
+        "UpdatedAttrubutes": response
+    }
+
+    return buildResponse(200, body)
+
+
 def lambda_handler(event, context):
     httpMethod = event["httpMethod"]
     path = event["path"]
@@ -55,6 +74,9 @@ def lambda_handler(event, context):
         response = getDemograhics(event["queryStringParameters"]["patientId"])
     elif httpMethod == "POST" and path == demographics_path:
         response = saveDemographics(json.loads(event["body"]))
+    elif httpMethod == "PATCH" and path == demographics_path:
+        request_body = json.loads(event["body"])
+        response = updateDemographics(request_body["patientId"], request_body["updatekey"], request_body["updatevalue"])
     else:
         response = buildResponse(404, "Not Found!")
 

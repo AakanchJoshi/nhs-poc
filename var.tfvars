@@ -1,1 +1,1 @@
-table_name = "terraform_demographics_table"
+table_name = "terraform_demographics"

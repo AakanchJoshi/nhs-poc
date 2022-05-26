@@ -1,83 +1,17 @@
 import json
-import boto3
+from demographic_functions import (buildResponse, getDemograhics, 
+                                    saveDemographics, deleteDemographics, updateDemographics)
 
-dynamodb_table_name = "demographic"
-dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(dynamodb_table_name)
-
+# health_path var
 health_path = "/health"
+# demographic_path var
 demographics_path = "/demographic"
 
 
-def buildResponse(statusCode, body=None):
-    response = {
-        "statusCode": statusCode,
-        "headers": {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-        }
-    }
-
-    if body is not None:
-        response["body"] = json.dumps(body)
-
-    return response
-
-
-def getDemograhics(patientId):
-    response = table.get_item(Key={"patientId": patientId})
-
-    if "Item" in response:
-        return buildResponse(200, response["Item"])
-    else:
-        return buildResponse(404, f"Patient ID {patientId} not found")
-
-
-def saveDemographics(requestBody):
-    try:
-        table.put_item(Item=requestBody)
-        body = {
-            "message": "SUCCESS",
-            "Item": requestBody
-        }
-        return buildResponse(200, body)
-    except:
-        return buildResponse(404, "Not able to save the patient details!")
-
-
-def deleteDemographics(patientId):
-    try:
-        response = table.delete_item(Key={'patientId' : patientId})
-        body = {
-            "Message": "SUCCESS",
-            "deleted_Item" : response
-        }
-        return buildResponse(200, body)
-    except:
-        return buildResponse(404, "Not able to delete the patient details!")
-
-
-def updateDemographics(patientId, updatekey, updatevalue):
-    response = table.update_item(
-        Key={
-            "patientId": patientId
-        },
-        UpdateExpression = "SET %s = :value" % updatekey,
-        ExpressionAttributeValues={
-                ':value': updatevalue
-        },
-        ReturnValues="UPDATED_NEW"
-    )
-    body = {
-        "message": "SUCCESS",
-        "UpdatedAttrubutes": response
-    }
-
-    return buildResponse(200, body)
-
-
 def lambda_handler(event, context):
+    # httpMethod type from event
     httpMethod = event["httpMethod"]
+    # path from event
     path = event["path"]
 
     if httpMethod == "GET" and path == health_path:

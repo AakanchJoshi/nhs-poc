@@ -9,7 +9,7 @@ def test_getDemographics():
     content = json.loads(response.content)
     
     assert response.status_code == 200, "Unsuccessful!"
-    assert content["patientEmail"] == "aakanch@outlook.com", "email is not matching!"
+    assert content["patientEmail"] == "terraform@gmail", "email is not matching!"
 
 def test_updateDemographics(new_value="new@gmail.com"):
     data = {"patientId": "200", "updatekey": "patientEmail", "updatevalue": new_value}

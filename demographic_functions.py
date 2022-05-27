@@ -73,6 +73,15 @@ def saveDemographics(requestBody):
 
 
 def deleteDemographics(patientId):
+    '''
+    Returns the response with the success message if run successfully
+
+        Parameters:
+            patientId (str): A string
+
+        Returns:
+            buildresponse (dict): buildresponse with success message (details deleted)
+    '''
     try:
         response = table.delete_item(Key={'patientId' : patientId})
         body = {

@@ -19,3 +19,11 @@ def test_updateDemographics(new_value="new@gmail.com"):
     
     assert response.status_code == 200, "Unsuccessful!"
     assert email == new_value, "patientEmail is not matching!"
+
+def test_deleteDemographic():
+    data = {"patientId":"2"}
+    response = requests.delete(url, data=json.dumps(data))
+    content = json.loads(response.content)
+    
+    assert response.status_code == 200, "Unsuccessful"
+    assert content['Message'] == "SUCCESS", "Couldn't be deleted"

@@ -1,6 +1,7 @@
 import json
-from demographic_functions import (buildResponse, getDemograhics, 
-                                    saveDemographics, deleteDemographics, updateDemographics)
+from demographic_functions import (buildResponse, getDemograhics,
+                                saveDemographics, deleteDemographics,
+                                updateDemographics)
 
 # health_path var
 health_path = "/health"
@@ -22,7 +23,8 @@ def lambda_handler(event, context):
         response = saveDemographics(json.loads(event["body"]))
     elif httpMethod == "PATCH" and path == demographics_path:
         request_body = json.loads(event["body"])
-        response = updateDemographics(request_body["patientId"], request_body["updatekey"], request_body["updatevalue"])
+        response = updateDemographics(request_body["patientId"],
+                            request_body["updatekey"], request_body["updatevalue"])
     elif httpMethod == "DELETE" and path == demographics_path:
         body = json.loads(event["body"])
         response = deleteDemographics(body["patientId"])

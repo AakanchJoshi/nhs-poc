@@ -9,6 +9,7 @@ def test_getDemographics():
     content = json.loads(response.content)
     
     assert response.status_code == 200, "Unsuccessful!"
+    assert len(content["patientPhoneNo"]) == 10 , "Phone number is not correct"
     assert content["patientEmail"] == "terraform@gmail", "email is not matching!"
 
 def test_updateDemographics(new_value="new@gmail.com"):
@@ -18,7 +19,9 @@ def test_updateDemographics(new_value="new@gmail.com"):
     email = content["UpdatedAttrubutes"]["Attributes"]["patientEmail"]
     
     assert response.status_code == 200, "Unsuccessful!"
+    assert new_value is not None , "Email address has not been entered"
     assert email == new_value, "patientEmail is not matching!"
+    assert email.endswith('com'), "wrong email address"
 
 def test_deleteDemographic():
     data = {"patientId":"2"}

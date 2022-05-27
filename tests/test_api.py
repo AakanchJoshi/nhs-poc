@@ -1,22 +1,22 @@
-import requests
 import json
+import requests
 
-url = ""
+URL = ""
 
 
-def test_getDemographics():
+def test_get_demographics():
     data = {"patientId": "100"}
-    response = requests.get(url, params=data)
+    response = requests.get(URL, params=data)
     content = json.loads(response.content)
     assert response.status_code == 200, "Unsuccessful!"
     assert len(content["patientPhoneNo"]) == 10, "Phone number is not correct"
     assert content["patientEmail"] == "terraform@gmail", "email is not matching!"
 
 
-def test_updateDemographics(new_value = "new@gmail.com"):
+def test_update_demographics(new_value = "new@gmail.com"):
     data = {"patientId": "200", "updatekey": "patientEmail",
             "updatevalue": new_value}
-    response = requests.patch(url, data=json.dumps(data))
+    response = requests.patch(URL, data=json.dumps(data))
     content = json.loads(response.content)
     email = content["UpdatedAttrubutes"]["Attributes"]["patientEmail"]
     assert response.status_code == 200, "Unsuccessful!"
@@ -25,9 +25,9 @@ def test_updateDemographics(new_value = "new@gmail.com"):
     assert email.endswith('com'), "wrong email address"
 
 
-def test_deleteDemographic():
+def test_delete_demographic():
     data = {"patientId": "2"}
-    response = requests.delete(url, data=json.dumps(data))
+    response = requests.delete(URL, data=json.dumps(data))
     content = json.loads(response.content)
     assert response.status_code == 200, "Unsuccessful"
     assert content['Message'] == "SUCCESS", "Couldn't be deleted"

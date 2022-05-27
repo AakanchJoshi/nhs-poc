@@ -1,34 +1,33 @@
 import json
-from demographic_functions import (buildResponse, getDemograhics,
-                                saveDemographics, deleteDemographics,
-                                updateDemographics)
+from demographic_functions import (build_response, get_demograhics,
+                                save_demographics, delete_demographics,
+                                update_demographics)
 
 # health_path var
-health_path = "/health"
+HEALTH_PATH = "/health"
 # demographic_path var
-demographics_path = "/demographic"
+DEMOGRAPHICS_PATH = "/demographic"
 
 
 def lambda_handler(event, context):
     # httpMethod type from event
-    httpMethod = event["httpMethod"]
+    http_method = event["http_method"]
     # path from event
     path = event["path"]
 
-    if httpMethod == "GET" and path == health_path:
-        response = buildResponse(200)
-    elif httpMethod == "GET" and path == demographics_path:
-        response = getDemograhics(event["queryStringParameters"]["patientId"])
-    elif httpMethod == "POST" and path == demographics_path:
-        response = saveDemographics(json.loads(event["body"]))
-    elif httpMethod == "PATCH" and path == demographics_path:
+    if http_method == "GET" and path == HEALTH_PATH:
+        response = build_response(200)
+    elif http_method == "GET" and path == DEMOGRAPHICS_PATH:
+        response = get_demograhics(event["queryStringParameters"]["patientId"])
+    elif http_method == "POST" and path == DEMOGRAPHICS_PATH:
+        response = save_demographics(json.loads(event["body"]))
+    elif http_method == "PATCH" and path == DEMOGRAPHICS_PATH:
         request_body = json.loads(event["body"])
-        response = updateDemographics(request_body["patientId"],
+        response = update_demographics(request_body["patientId"],
                             request_body["updatekey"], request_body["updatevalue"])
-    elif httpMethod == "DELETE" and path == demographics_path:
+    elif http_method == "DELETE" and path == DEMOGRAPHICS_PATH:
         body = json.loads(event["body"])
-        response = deleteDemographics(body["patientId"])
+        response = delete_demographics(body["patientId"])
     else:
-        response = buildResponse(404, "Not Found!")
-        
+        response = build_response(404, "Not Found!")
     return response

@@ -41,7 +41,8 @@ def getDemograhics(patientId):
             patientId (str): A string
 
         Returns:
-            buildResponse (dict): buildResponse with status code, header and patient details
+            buildResponse (dict): buildResponse with
+            status code, header and patient details
     '''
     response = table.get_item(Key={"patientId": patientId})
 
@@ -56,10 +57,12 @@ def saveDemographics(requestBody):
     Returns the response with the success message if run successfully
 
         Parameters:
-            requestBody (dict): consists of patientId, patientEmail, patientPhoneNo
+            requestBody (dict): consists of patientId,
+            patientEmail, patientPhoneNo
             
         Returns:
-            buildresponse (dict): buildresponse with success message (details saved)
+            buildresponse (dict): buildresponse with
+            success message (details saved)
     '''
     try:
         table.put_item(Item=requestBody)
@@ -80,13 +83,14 @@ def deleteDemographics(patientId):
             patientId (str): A string
 
         Returns:
-            buildresponse (dict): buildresponse with success message (details deleted)
+            buildresponse (dict): buildresponse with
+            success message (details deleted)
     '''
     try:
-        response = table.delete_item(Key={'patientId' : patientId})
+        response = table.delete_item(Key={'patientId': patientId})
         body = {
             "Message": "SUCCESS",
-            "deleted_Item" : response
+            "deleted_Item": response
         }
         return buildResponse(200, body)
     except:
@@ -100,17 +104,18 @@ def updateDemographics(patientId, updatekey, updatevalue):
         Parameters:
             patientId (str): A string
             updatekey (str): A field name
-            updatevalue (str): Replace exixting value with new value
-            
+            updatevalue (str): Replace exixting value
+            with new value
 
         Returns:
-            buildresponse (dict): buildresponse with updated value and success message
+            buildresponse (dict): buildresponse with updated value
+            and success message
     '''
     response = table.update_item(
         Key={
             "patientId": patientId
         },
-        UpdateExpression = "SET %s = :value" % updatekey,
+        UpdateExpression="SET %s = :value" % updatekey,
         ExpressionAttributeValues={
                 ':value': updatevalue
         },

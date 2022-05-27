@@ -2,14 +2,14 @@ import json
 import boto3
 
 # DynamoDb table name
-dynamodb_table_name = "terraform_demographics"
+DYNAMODB_TABLE_NAME = "terraform_demographics"
 # Fetching DynamoDB service using boto3
 dynamodb = boto3.resource("dynamodb")
 # DynamoDb table
-table = dynamodb.Table(dynamodb_table_name)
+table = dynamodb.Table(DYNAMODB_TABLE_NAME)
 
 
-def buildResponse(statusCode, body=None):
+def build_response(status_code, body=None):
     '''
     Returns the response with status code, header and body
 
@@ -21,7 +21,7 @@ def buildResponse(statusCode, body=None):
             response (dict): response with status code, header and body
     '''
     response = {
-        "statusCode": statusCode,
+        "statusCode": status_code,
         "headers": {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*"
@@ -33,76 +33,75 @@ def buildResponse(statusCode, body=None):
     return response
 
 
-def getDemograhics(patientId):
+def get_demograhics(patient_id):
     '''
-    Returns the patient details, if provided patientId
+    Returns the patient details, if provided patient_id
 
         Parameters:
-            patientId (str): A string
+            patient_id (str): A string
 
         Returns:
             buildResponse (dict): buildResponse with
             status code, header and patient details
     '''
-    response = table.get_item(Key={"patientId": patientId})
+    response = table.get_item(Key={"patientId": patient_id})
 
     if "Item" in response:
-        return buildResponse(200, response["Item"])
+        return build_response(200, response["Item"])
     else:
-        return buildResponse(404, f"Patient ID {patientId} not found")
+        return build_response(404, f"Patient ID {patient_id} not found")
 
 
-def saveDemographics(requestBody):
+def save_demographics(request_body):
     '''
     Returns the response with the success message if run successfully
 
         Parameters:
-            requestBody (dict): consists of patientId,
+            request_body (dict): consists of patientId,
             patientEmail, patientPhoneNo
-            
         Returns:
             buildresponse (dict): buildresponse with
             success message (details saved)
     '''
     try:
-        table.put_item(Item=requestBody)
+        table.put_item(Item=request_body)
         body = {
             "message": "SUCCESS",
-            "Item": requestBody
+            "Item": request_body
         }
-        return buildResponse(200, body)
+        return build_response(200, body)
     except:
-        return buildResponse(404, "Not able to save the patient details!")
+        return build_response(404, "Not able to save the patient details!")
 
 
-def deleteDemographics(patientId):
+def delete_demographics(patient_id):
     '''
     Returns the response with the success message if run successfully
 
         Parameters:
-            patientId (str): A string
+            patient_id (str): A string
 
         Returns:
             buildresponse (dict): buildresponse with
             success message (details deleted)
     '''
     try:
-        response = table.delete_item(Key={'patientId': patientId})
+        response = table.delete_item(Key={'patientId': patient_id})
         body = {
             "Message": "SUCCESS",
             "deleted_Item": response
         }
-        return buildResponse(200, body)
+        return build_response(200, body)
     except:
-        return buildResponse(404, "Not able to delete the patient details!")
+        return build_response(404, "Not able to delete the patient details!")
 
 
-def updateDemographics(patientId, updatekey, updatevalue):
+def update_demographics(patient_id, updatekey, updatevalue):
     '''
     Returns the response with updated value of the field
 
         Parameters:
-            patientId (str): A string
+            patient_id (str): A string
             updatekey (str): A field name
             updatevalue (str): Replace exixting value
             with new value
@@ -113,7 +112,7 @@ def updateDemographics(patientId, updatekey, updatevalue):
     '''
     response = table.update_item(
         Key={
-            "patientId": patientId
+            "patientId": patient_id
         },
         UpdateExpression="SET %s = :value" % updatekey,
         ExpressionAttributeValues={
@@ -126,4 +125,4 @@ def updateDemographics(patientId, updatekey, updatevalue):
         "UpdatedAttrubutes": response
     }
 
-    return buildResponse(200, body)
+    return build_response(200, body)
